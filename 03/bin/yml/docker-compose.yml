@@ -1,0 +1,54 @@
+version: '3'
+
+volumes:
+  hotwire_study_db_volume:
+    driver: 'local'
+
+  hotwire_study_gem_volume:
+    driver: 'local'
+
+services:
+  hotwire_study_front:
+    build: ../../front/
+    ports:
+      - "$APP_PORT:$APP_PORT"
+    volumes:
+      - ../../front/scripts:/var/scripts
+    environment:
+      APP_HOST:
+      APP_PORT:
+    container_name: "hotwire_study_front"
+    command: /var/scripts/start.sh
+
+  hotwire_study_db:
+    build: ../../db/
+    volumes:
+      - hotwire_study_db_volume:/var/lib/mysql
+      - ../../db/scripts:/var/scripts
+    environment:
+      DB_NAME:
+      DB_HOST:
+      DB_USER:
+      DB_PASS:
+      MYSQL_ROOT_PASSWORD: 12345678
+    container_name: "hotwire_study_db"
+    ports:
+      - "3306:3306"
+
+  hotwire_study_web:
+    build: ../../web/
+    volumes:
+      - ../../web/myapp:/myapp
+      - ../../web/scripts:/var/scripts
+      - hotwire_study_gem_volume:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    environment:
+      DB_NAME:
+      DB_HOST:
+      DB_USER:
+      DB_PASS:
+      BUNDLE_APP_CONFIG: /myapp/.bundle
+      RAILS_PRODUCTION_MODE:
+    container_name: "hotwire_study_web"
+    command: /var/scripts/entry_point.sh

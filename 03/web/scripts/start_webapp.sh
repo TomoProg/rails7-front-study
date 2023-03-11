@@ -26,6 +26,6 @@ if [ "$RAILS_PRODUCTION_MODE" = '1' ]; then
 
     /myapp/bin/rails s -p 3000 -b '0.0.0.0' -e production
 else
-    /myapp/bin/rails s -p 3000 -b '0.0.0.0'
+    /myapp/bin/dev
 fi
 
